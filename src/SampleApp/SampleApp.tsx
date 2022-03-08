@@ -14,7 +14,7 @@ import {
 } from '@camberi/firecms';
 
 import { IconButton, Tooltip } from '@mui/material';
-import { GitHub } from '@mui/icons-material';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 
 import { firebaseConfig } from '../firebase_config';
 import { ExampleCMSView } from './ExampleCMSView';
@@ -112,14 +112,14 @@ function SampleApp() {
       'header_image',
       'status',
       'content',
-      'reviewed',
-      'gold_text',
+      'tags',
+      'publish_date',
     ],
     description:
       'Collection of blog entries included in our [awesome blog](https://www.google.com)',
     textSearchEnabled: true,
     initialFilter: {
-      status: ['==', 'published'],
+      //   status: ['==', 'published'],
     },
   });
 
@@ -150,16 +150,16 @@ function SampleApp() {
     ],
   });
 
-  const githubLink = (
-    <Tooltip title="See this project on GitHub. This button is only present in this demo">
+  const drinkdepthLink = (
+    <Tooltip title="drinkdepth.com 이동">
       <IconButton
-        href={'https://github.com/Camberi/firecms'}
+        href={'https://drinkdepth.com'}
         rel="noopener noreferrer"
         target="_blank"
         component={'a'}
         size="large"
       >
-        <GitHub />
+        <LocalCafeIcon />
       </IconButton>
     </Tooltip>
   );
@@ -242,7 +242,7 @@ function SampleApp() {
       schemaOverrideHandler={customSchemaOverrideHandler}
       firebaseConfig={firebaseConfig}
       onFirebaseInit={onFirebaseInit}
-      toolbarExtraWidget={githubLink}
+      toolbarExtraWidget={drinkdepthLink}
     />
   );
 }
