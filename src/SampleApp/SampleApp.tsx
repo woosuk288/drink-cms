@@ -38,7 +38,8 @@ import { customSchemaOverrideHandler } from './schemas/custom_schema_resolver';
 
 import 'typeface-rubik';
 import 'typeface-space-mono';
-import { Locale, Product } from './types';
+import { Coffee, Locale, Product } from './types';
+import { coffeeCallbacks, coffeeSchema } from './schemas/coffee_schema';
 
 function SampleApp() {
   const localeCollection: EntityCollection<Locale> = buildCollection({
@@ -69,6 +70,24 @@ function SampleApp() {
     extraActions: productExtraActionBuilder,
     subcollections: [localeCollection],
     excludedProperties: ['images'],
+  });
+
+  const coffeeCollection = buildCollection<Coffee>({
+    path: 'coffee',
+    schema: coffeeSchema,
+    callbacks: coffeeCallbacks,
+    name: 'Coffee',
+    group: 'Main',
+    description: 'List of the coffee currently sold in our shop',
+    textSearchEnabled: true,
+    filterCombinations: [{ created_at: 'desc' }],
+    permissions: ({ authController }) => ({
+      edit: true,
+      create: true,
+      // we use some custom logic by storing user data in the `extra`
+      // field of the user
+      delete: authController.extra?.roles.includes('admin'),
+    }),
   });
 
   const usersCollection = buildCollection({
@@ -210,12 +229,15 @@ function SampleApp() {
       );
 
     const navigation: Navigation = {
-      collections: [productsCollection, usersCollection, blogCollection],
+      collections: [coffeeCollection, usersCollection, blogCollection],
       views: customViews,
     };
 
     if (process.env.NODE_ENV !== 'production') {
-      navigation.collections.push(buildCollection(testCollection));
+      navigation.collections.push(
+        buildCollection(testCollection),
+        productsCollection
+      );
     }
 
     return navigation;
@@ -233,16 +255,18 @@ function SampleApp() {
         // 'github.com',
         // 'twitter.com',
         // 'microsoft.com',
-        // 'apple.com'
+        'apple.com',
       ]}
       textSearchController={textSearchController}
-      allowSkipLogin={true}
+      //   allowSkipLogin={true}
       logo={logo}
       navigation={navigation}
       schemaOverrideHandler={customSchemaOverrideHandler}
       firebaseConfig={firebaseConfig}
       onFirebaseInit={onFirebaseInit}
       toolbarExtraWidget={drinkdepthLink}
+      //   primaryColor="#4f9cff"
+      locale="ko"
     />
   );
 }

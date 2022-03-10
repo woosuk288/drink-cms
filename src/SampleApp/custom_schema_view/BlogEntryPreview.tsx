@@ -48,7 +48,7 @@ export function BlogEntryPreview({ modifiedValues }: EntityCustomViewParams) {
         <PostHead
           headerUrl={headerUrl}
           title={modifiedValues.name}
-          publish_date={modifiedValues.publish_date}
+          publish_date={modifiedValues.publish_date?.toLocaleDateString()}
           tags={modifiedValues.tags}
         />
       )}
