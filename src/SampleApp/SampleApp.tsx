@@ -38,8 +38,9 @@ import { customSchemaOverrideHandler } from './schemas/custom_schema_resolver';
 
 import 'typeface-rubik';
 import 'typeface-space-mono';
-import { Coffee, Locale, Product } from './types';
+import { Coffee, Company, Locale, Product } from './types';
 import { coffeeCallbacks, coffeeSchema } from './schemas/coffee_schema';
+import { companiesSchema } from './schemas/company_schema';
 
 function SampleApp() {
   const localeCollection: EntityCollection<Locale> = buildCollection({
@@ -72,15 +73,32 @@ function SampleApp() {
     excludedProperties: ['images'],
   });
 
-  const coffeeCollection = buildCollection<Coffee>({
-    path: 'coffee',
+  const coffeesCollection = buildCollection<Coffee>({
+    path: 'coffees',
     schema: coffeeSchema,
     callbacks: coffeeCallbacks,
-    name: 'Coffee',
+    name: 'Coffees',
     group: 'Main',
     description: 'List of the coffee currently sold in our shop',
     textSearchEnabled: true,
     filterCombinations: [{ created_at: 'desc' }],
+    permissions: ({ authController }) => ({
+      edit: true,
+      create: true,
+      // we use some custom logic by storing user data in the `extra`
+      // field of the user
+      delete: authController.extra?.roles.includes('admin'),
+    }),
+  });
+
+  const companiesCollection = buildCollection<Company>({
+    path: 'companies',
+    schema: companiesSchema,
+    name: 'Companies',
+    group: 'Main',
+    description: 'List of the coffee currently sold in our shop',
+    textSearchEnabled: true,
+    // filterCombinations: [{ created_at: 'desc' }],
     permissions: ({ authController }) => ({
       edit: true,
       create: true,
@@ -229,14 +247,15 @@ function SampleApp() {
       );
 
     const navigation: Navigation = {
-      collections: [coffeeCollection, usersCollection, blogCollection],
+      collections: [coffeesCollection, usersCollection, blogCollection],
       views: customViews,
     };
 
     if (process.env.NODE_ENV !== 'production') {
       navigation.collections.push(
         buildCollection(testCollection),
-        productsCollection
+        productsCollection,
+        companiesCollection
       );
     }
 

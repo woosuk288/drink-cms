@@ -48,6 +48,9 @@ export const coffeeSchema = buildSchema<Coffee>({
     description: {
       dataType: 'string',
       title: '한 줄 상품 설명',
+      validation: {
+        required: true,
+      },
     },
     tags: {
       title: '태그',
@@ -66,7 +69,7 @@ export const coffeeSchema = buildSchema<Coffee>({
       config: {
         enumValues: {
           very_low: '매우 낮음',
-          low: '싱글오리진',
+          low: '낮음',
           average: '보통',
           high: '높음',
           very_high: '매우 높음',
@@ -79,7 +82,7 @@ export const coffeeSchema = buildSchema<Coffee>({
       config: {
         enumValues: {
           very_low: '매우 낮음',
-          low: '싱글오리진',
+          low: '낮음',
           average: '보통',
           high: '높음',
           very_high: '매우 높음',
@@ -92,7 +95,7 @@ export const coffeeSchema = buildSchema<Coffee>({
       config: {
         enumValues: {
           very_low: '매우 낮음',
-          low: '싱글오리진',
+          low: '낮음',
           average: '보통',
           high: '높음',
           very_high: '매우 높음',
@@ -105,7 +108,7 @@ export const coffeeSchema = buildSchema<Coffee>({
       config: {
         enumValues: {
           very_low: '매우 낮음',
-          low: '싱글오리진',
+          low: '낮음',
           average: '보통',
           high: '높음',
           very_high: '매우 높음',
@@ -166,7 +169,7 @@ export const coffeeSchema = buildSchema<Coffee>({
       description: 'Reference to self',
       of: {
         dataType: 'reference',
-        path: 'coffee',
+        path: 'coffees',
       },
       validation: {
         min: 0,
