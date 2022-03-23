@@ -176,20 +176,10 @@ export const coffeeSchema = buildSchema<Coffee>({
         max: 4,
       },
     },
-    created_by: {
-      title: 'Publisher',
-      description: 'This is an example of a map property',
-      dataType: 'map',
-      properties: {
-        name: {
-          title: '',
-          dataType: 'string',
-        },
-        id: {
-          title: 'External id',
-          dataType: 'string',
-        },
-      },
+    uid: {
+      dataType: 'string',
+      title: 'user id',
+
       disabled: {
         hidden: true,
       },
@@ -214,8 +204,7 @@ export const coffeeSchema = buildSchema<Coffee>({
 export const coffeeCallbacks: EntityCallbacks = {
   onPreSave: ({ schema, path, entityId, values, status, context }) => {
     if (status === 'new') {
-      values.created_by.name = context.authController.user.displayName;
-      values.created_by.id = context.authController.user.uid;
+      values.uid = context.authController.user.uid;
     }
 
     return values;

@@ -83,28 +83,31 @@ function SampleApp() {
     textSearchEnabled: true,
     filterCombinations: [{ created_at: 'desc' }],
     permissions: ({ authController }) => ({
-      edit: true,
-      create: true,
+      edit: authController.extra?.roles.includes('admin'),
+      create: authController.extra?.roles.includes('admin'),
       // we use some custom logic by storing user data in the `extra`
       // field of the user
       delete: authController.extra?.roles.includes('admin'),
     }),
+    initialFilter: {
+      // uid: ['==', 'ptyL86Mqu8gBqhobO5UVU37EBFx1'],
+    },
   });
 
   const companiesCollection = buildCollection<Company>({
     path: 'companies',
     schema: companiesSchema,
     name: 'Companies',
-    group: 'Main',
+    group: 'Admin',
     description: 'List of the coffee currently sold in our shop',
     textSearchEnabled: true,
     // filterCombinations: [{ created_at: 'desc' }],
     permissions: ({ authController }) => ({
-      edit: true,
-      create: true,
+      edit: false,
+      create: false,
       // we use some custom logic by storing user data in the `extra`
       // field of the user
-      delete: authController.extra?.roles.includes('admin'),
+      delete: false,
     }),
   });
 
@@ -112,7 +115,7 @@ function SampleApp() {
     path: 'users',
     schema: usersSchema,
     name: 'Users',
-    group: 'Main',
+    group: 'Admin',
     description: 'Registered users',
     textSearchEnabled: true,
     additionalColumns: [
@@ -155,6 +158,13 @@ function SampleApp() {
     description:
       'Collection of blog entries included in our [awesome blog](https://www.google.com)',
     textSearchEnabled: true,
+    permissions: ({ authController }) => ({
+      edit: authController.extra?.roles.includes('admin'),
+      create: authController.extra?.roles.includes('admin'),
+      // we use some custom logic by storing user data in the `extra`
+      // field of the user
+      delete: authController.extra?.roles.includes('admin'),
+    }),
     initialFilter: {
       //   status: ['==', 'published'],
     },
@@ -227,13 +237,19 @@ function SampleApp() {
 
     // This is an example of retrieving async data related to the user
     // and storing it in the user extra field
-    const sampleUserData = await Promise.resolve({
-      roles: ['admin'],
-    });
+    // const sampleUserData = await Promise.resolve({
+    //   roles: ['admin'],
+    // });
 
-    authController.setExtra(sampleUserData);
+    const userRoleData =
+      user?.uid === 'OpFd3p9XfhXrY4mxeavWjnViLYB3' ||
+      user?.uid === 'ptyL86Mqu8gBqhobO5UVU37EBFx1'
+        ? { roles: ['admin'] }
+        : { roles: [] };
+
+    authController.setExtra(userRoleData);
     console.log('Allowing access to', user);
-    return true;
+    return !!user;
   };
 
   const navigation: NavigationBuilder<FirebaseUser> = async ({
@@ -247,14 +263,14 @@ function SampleApp() {
       );
 
     const navigation: Navigation = {
-      collections: [coffeesCollection, usersCollection, blogCollection],
+      collections: [coffeesCollection, /* usersCollection, */ blogCollection],
       views: customViews,
     };
 
     if (process.env.NODE_ENV !== 'production') {
       navigation.collections.push(
-        buildCollection(testCollection),
-        productsCollection,
+        // buildCollection(testCollection),
+        // productsCollection,
         companiesCollection
       );
     }
