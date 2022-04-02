@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "foodoverflow",
+    // "site": "foodoverflow",
     "public": "build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

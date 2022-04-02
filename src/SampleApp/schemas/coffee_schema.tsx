@@ -27,7 +27,8 @@ export const coffeeSchema = buildSchema<Coffee>({
         required: true,
       },
     },
-    main_image: {
+
+    image_url: {
       dataType: 'string',
       title: '사진',
       config: {
@@ -38,6 +39,7 @@ export const coffeeSchema = buildSchema<Coffee>({
           metadata: {
             cacheControl: 'max-age=1000000',
           },
+          storeUrl: true,
         },
       },
       description: 'Upload field for images',
@@ -61,6 +63,11 @@ export const coffeeSchema = buildSchema<Coffee>({
         config: {
           previewAsTag: true,
         },
+      },
+      validation: {
+        required: true,
+        min: 0,
+        max: 4,
       },
     },
     taste_body: {
@@ -160,6 +167,16 @@ export const coffeeSchema = buildSchema<Coffee>({
       title: 'Brand or Company',
       validation: {
         required: true,
+      },
+    },
+    company: {
+      dataType: 'reference',
+      title: 'Company',
+      path: 'companies',
+      previewProperties: ['company_name', 'president_name'],
+      validation: {
+        required: true,
+        requiredMessage: '필수입니다.',
       },
     },
 

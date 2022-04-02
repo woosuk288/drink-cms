@@ -31,6 +31,10 @@ export const companiesSchema = buildSchema<Company>({
         },
       },
     },
+    telephone: {
+      title: '전화번호(회사)',
+      dataType: 'string',
+    },
     //
 
     logo: {
@@ -64,10 +68,6 @@ export const companiesSchema = buildSchema<Company>({
       validation: {
         email: true,
       },
-    },
-    telephone: {
-      title: '회사 전화',
-      dataType: 'string',
     },
 
     images: {

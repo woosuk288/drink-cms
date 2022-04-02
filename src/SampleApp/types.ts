@@ -31,7 +31,7 @@ export type Locale = {
 
 export type Coffee = {
   name: string;
-  main_image: string;
+  image_url: string;
   description: string;
   tags: string[];
   taste_body: string;
@@ -45,6 +45,7 @@ export type Coffee = {
 
   public: boolean;
   brand: string;
+  company: EntityReference;
   related_coffee: EntityReference[];
 
   uid: string;
@@ -58,6 +59,8 @@ export type Company = {
   president_name: string;
   opening_date: string;
   business_licence: string;
+  telephone: string;
+
   // is_valid: boolean;
   uid: string;
   updatedd_at?: string;
@@ -67,6 +70,5 @@ export type Company = {
   description: string;
   address: string;
   email: string;
-  telephone: string;
   images: string[];
 };
