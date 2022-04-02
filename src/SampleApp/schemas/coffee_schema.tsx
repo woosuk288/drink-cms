@@ -2,6 +2,7 @@ import {
   buildSchema,
   EntityCallbacks,
   EntityCustomView,
+  EntityOnSaveProps,
 } from '@camberi/firecms';
 
 import { SampleProductsView } from '../custom_schema_view/SampleProductsView';
@@ -36,6 +37,9 @@ export const coffeeSchema = buildSchema<Coffee>({
           mediaType: 'image',
           storagePath: 'images',
           acceptedFiles: ['image/*'],
+          fileName: (context) => {
+            return new Date().toLocaleDateString() + context.file.name;
+          },
           metadata: {
             cacheControl: 'max-age=1000000',
           },
@@ -162,21 +166,30 @@ export const coffeeSchema = buildSchema<Coffee>({
       description: 'Should this coffee be visible in the website',
       // longDescription: "Example of a long description hidden under a tooltip. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis bibendum turpis. Sed scelerisque ligula nec nisi pellentesque, eget viverra lorem facilisis. Praesent a lectus ac ipsum tincidunt posuere vitae non risus. In eu feugiat massa. Sed eu est non velit facilisis facilisis vitae eget ante. Nunc ut malesuada erat. Nullam sagittis bibendum porta. Maecenas vitae interdum sapien, ut aliquet risus. Donec aliquet, turpis finibus aliquet bibendum, tellus dui porttitor quam, quis pellentesque tellus libero non urna. Vestibulum maximus pharetra congue. Suspendisse aliquam congue quam, sed bibendum turpis. Aliquam eu enim ligula. Nam vel magna ut urna cursus sagittis. Suspendisse a nisi ac justo ornare tempor vel eu eros."
     },
-    brand: {
-      dataType: 'string',
-      title: 'Brand or Company',
-      validation: {
-        required: true,
-      },
-    },
+    // brand: {
+    //   dataType: 'string',
+    //   title: 'Brand or Company',
+    //   validation: {
+    //     required: true,
+    //   },
+    // },
     company: {
       dataType: 'reference',
-      title: 'Company',
+      title: '회사',
       path: 'companies',
       previewProperties: ['company_name', 'president_name'],
       validation: {
         required: true,
         requiredMessage: '필수입니다.',
+      },
+    },
+
+    company_id: {
+      dataType: 'string',
+      title: 'Company ID',
+
+      disabled: {
+        hidden: true,
       },
     },
 
@@ -219,10 +232,23 @@ export const coffeeSchema = buildSchema<Coffee>({
 });
 
 export const coffeeCallbacks: EntityCallbacks = {
-  onPreSave: ({ schema, path, entityId, values, status, context }) => {
+  onPreSave: ({
+    schema,
+    path,
+    entityId,
+    values,
+    status,
+    context,
+  }: EntityOnSaveProps<Coffee>) => {
     if (status === 'new') {
       values.uid = context.authController.user.uid;
     }
+
+    if (!values.company?.id) {
+      throw Error('회사를 선택하지 않았거나, 회사가 존재하지 않습니다.');
+    }
+
+    values.company_id = values.company.id;
 
     return values;
   },

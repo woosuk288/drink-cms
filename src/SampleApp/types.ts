@@ -8,7 +8,7 @@ export type Product = {
   price: number;
   currency: string;
   public: boolean;
-  brand: string;
+  brand?: string;
   description: string;
   amazon_link: string;
   images: string[];
@@ -44,8 +44,9 @@ export type Coffee = {
   process: string;
 
   public: boolean;
-  brand: string;
+  // brand?: string;
   company: EntityReference;
+  company_id: string;
   related_coffee: EntityReference[];
 
   uid: string;
