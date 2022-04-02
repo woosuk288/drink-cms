@@ -150,6 +150,7 @@ function SampleApp() {
     properties: [
       'name',
       'header_image',
+      'image_url',
       'status',
       'content',
       'tags',

@@ -9,6 +9,7 @@ import { BlogEntryPreview } from '../custom_schema_view/BlogEntryPreview';
 type BlogEntry = {
   name: string;
   header_image: string;
+  image_url: string;
   content: any[];
   // gold_text: string,
   created_at: Date;
@@ -44,6 +45,21 @@ export const blogSchema = buildSchema<BlogEntry>({
           metadata: {
             cacheControl: 'max-age=1000000',
           },
+        },
+      },
+    }),
+    image_url: buildProperty({
+      title: '이미지',
+      dataType: 'string',
+      config: {
+        storageMeta: {
+          mediaType: 'image',
+          storagePath: 'images',
+          acceptedFiles: ['image/*'],
+          metadata: {
+            cacheControl: 'max-age=1000000',
+          },
+          storeUrl: true,
         },
       },
     }),
