@@ -149,7 +149,6 @@ function SampleApp() {
     defaultSize: 'l',
     properties: [
       'name',
-      'header_image',
       'image_url',
       'status',
       'content',

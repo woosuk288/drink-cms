@@ -20,18 +20,22 @@ import {
 import { Product } from '../types';
 import { productSchema } from '../schemas/products_schema';
 import PostHead from './PostHead';
+import { BlogEntry } from '../schemas/blog_schema';
+import styled from '@emotion/styled';
 
-export function BlogEntryPreview({ modifiedValues }: EntityCustomViewParams) {
-  const storage = useStorageSource();
+export function BlogEntryPreview({
+  modifiedValues,
+}: EntityCustomViewParams<BlogEntry>) {
+  // const storage = useStorageSource();
 
-  const [headerUrl, setHeaderUrl] = useState<string | undefined>();
-  useEffect(() => {
-    if (modifiedValues?.header_image) {
-      storage
-        .getDownloadURL(modifiedValues.header_image)
-        .then((res) => setHeaderUrl(res));
-    }
-  }, [storage, modifiedValues?.header_image]);
+  // const [headerUrl, setHeaderUrl] = useState<string | undefined>();
+  // useEffect(() => {
+  //   if (modifiedValues?.header_image) {
+  //     storage
+  //       .getDownloadURL(modifiedValues.header_image)
+  //       .then((res) => setHeaderUrl(res));
+  //   }
+  // }, [storage, modifiedValues?.header_image]);
 
   return (
     <Box>
@@ -44,24 +48,15 @@ export function BlogEntryPreview({ modifiedValues }: EntityCustomViewParams) {
                 }}
                 src={headerUrl}
             />} */}
-      {headerUrl && (
-        <PostHead
-          headerUrl={headerUrl}
-          title={modifiedValues.name}
-          publish_date={modifiedValues.publish_date?.toLocaleDateString()}
-          tags={modifiedValues.tags}
-        />
-      )}
 
-      <Container
-        maxWidth={'md'}
-        style={{
-          alignItems: 'center',
-          justifyItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <PostHead
+        headerUrl={modifiedValues?.image_url ?? ''}
+        title={modifiedValues?.name ?? ''}
+        publish_date={modifiedValues?.publish_date?.toLocaleDateString() ?? ''}
+        tags={modifiedValues?.tags ?? []}
+      />
+
+      <MarkdownRenderer>
         {modifiedValues?.content &&
           modifiedValues.content
             .filter((e: any) => !!e)
@@ -73,12 +68,19 @@ export function BlogEntryPreview({ modifiedValues }: EntityCustomViewParams) {
                     markdownText={entry.value}
                   />
                 );
-              if (entry.type === 'images')
+              if (entry.type === 'image')
                 return (
-                  <Images
-                    key={`preview_images_${index}`}
-                    storagePaths={entry.value}
-                  />
+                  // <Images
+                  //   key={`preview_images_${index}`}
+                  //   storagePaths={entry.value}
+                  // />
+                  <a href={entry.value} target="_blank" rel="noreferrer">
+                    <img
+                      key={`preview_images_${index}`}
+                      src={entry.value}
+                      alt="preview"
+                    />
+                  </a>
                 );
               if (entry.type === 'products')
                 return (
@@ -89,10 +91,137 @@ export function BlogEntryPreview({ modifiedValues }: EntityCustomViewParams) {
                 );
               return <ErrorView error={'Unexpected value in blog entry'} />;
             })}
-      </Container>
+      </MarkdownRenderer>
     </Box>
   );
 }
+
+const MarkdownRenderer = styled.div`
+  // Renderer Style
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 100px 0;
+
+  // Markdown Style
+  line-height: 1.8;
+  font-size: 16px;
+  font-weight: 400;
+
+  // Apply Padding Attribute to All Elements
+  p,
+  blockquote,
+  ul ol,
+  dl,
+  table,
+  pre,
+  details {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  // Adjust Heading Element Style
+  h1,
+  h2,
+  h3 {
+    line-height: 1.5;
+  }
+
+  * + h1 {
+    margin-top: 80px;
+  }
+  * + h2 {
+    margin-top: 64px;
+  }
+  * + h3 {
+    margin-top: 48px;
+  }
+
+  hr + h1,
+  hr + h2,
+  hr + h3 {
+    margin-top: 0;
+  }
+
+  h1 {
+    font-weight: 800;
+    margin-bottom: 30px;
+    font-size: 30px;
+  }
+
+  h2 {
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  // Adjust Quotation Element Style
+  blockquote {
+    margin: 30px 0;
+    padding: 5px 15px;
+    border-left: 2px solid #000000;
+    font-weight: 800;
+  }
+
+  // Adjust List Element Style
+  ol,
+  ul {
+    margin-left: 20px;
+    padding: 30px 0;
+  }
+
+  // Adjust Horizontal Rule style
+  hr {
+    border: 1px solid #000000;
+    margin: 100px 0;
+  }
+
+  // Adjust Link Element Style
+  a {
+    color: #4263eb;
+    text-decoration: underline;
+  }
+
+  // Adjust Code Style
+  pre[class*='language-'] {
+    margin: 30px 0;
+    padding: 15px;
+    font-size: 15px;
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
+    }
+  }
+
+  code[class*='language-'],
+  pre[class*='language-'] {
+    tab-size: 2;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 40px 16px;
+    img {
+      width: 100%;
+    }
+
+    hr {
+      margin: 50px 0;
+    }
+  }
+`;
 
 export function Images({ storagePaths }: { storagePaths: string[] }) {
   if (!storagePaths) return <></>;

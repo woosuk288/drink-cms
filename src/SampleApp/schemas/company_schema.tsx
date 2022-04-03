@@ -48,6 +48,7 @@ export const companiesSchema = buildSchema<Company>({
           metadata: {
             cacheControl: 'max-age=1000000',
           },
+          storeUrl: true,
         },
       },
     },

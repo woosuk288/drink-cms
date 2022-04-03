@@ -6,9 +6,8 @@ import {
 } from '@camberi/firecms';
 import { BlogEntryPreview } from '../custom_schema_view/BlogEntryPreview';
 
-type BlogEntry = {
+export type BlogEntry = {
   name: string;
-  header_image: string;
   image_url: string;
   content: any[];
   // gold_text: string,
@@ -34,20 +33,6 @@ export const blogSchema = buildSchema<BlogEntry>({
       validation: { required: true },
       dataType: 'string',
     }),
-    header_image: buildProperty({
-      title: 'Header image',
-      dataType: 'string',
-      config: {
-        storageMeta: {
-          mediaType: 'image',
-          storagePath: 'images',
-          acceptedFiles: ['image/*'],
-          metadata: {
-            cacheControl: 'max-age=1000000',
-          },
-        },
-      },
-    }),
     image_url: buildProperty({
       title: '이미지',
       dataType: 'string',
@@ -72,7 +57,7 @@ export const blogSchema = buildSchema<BlogEntry>({
         enumValues: {
           published: {
             label: 'Published',
-            disabled: !values.header_image || !values.name,
+            disabled: !values.image_url || !values.name,
           },
           draft: 'Draft',
         },
@@ -84,7 +69,7 @@ export const blogSchema = buildSchema<BlogEntry>({
       autoValue: 'on_create',
     },
     content: buildProperty({
-      title: 'Content',
+      title: '본문 내용',
       description:
         'Example of a complex array with multiple properties as children',
       validation: { required: true },
@@ -94,28 +79,44 @@ export const blogSchema = buildSchema<BlogEntry>({
         typeField: 'type',
         valueField: 'value',
         properties: {
-          images: {
-            title: 'Images',
-            dataType: 'array',
-            of: {
-              dataType: 'string',
-              config: {
-                storageMeta: {
-                  mediaType: 'image',
-                  storagePath: 'images',
-                  acceptedFiles: ['image/*'],
-                  metadata: {
-                    cacheControl: 'max-age=1000000',
-                  },
+          // images: {
+          //   title: 'Images',
+          //   dataType: 'array',
+          //   of: {
+          //     dataType: 'string',
+          //     config: {
+          //       storageMeta: {
+          //         mediaType: 'image',
+          //         storagePath: 'images',
+          //         acceptedFiles: ['image/*'],
+          //         metadata: {
+          //           cacheControl: 'max-age=1000000',
+          //         },
+          //         storeUrl: true,
+          //       },
+          //     },
+          //   },
+          //   description:
+          //     'This fields allows uploading multiple images at once and reordering',
+          // },
+          image: {
+            title: '이미지 첨부',
+            dataType: 'string',
+            config: {
+              storageMeta: {
+                mediaType: 'image',
+                storagePath: 'images',
+                acceptedFiles: ['image/*'],
+                metadata: {
+                  cacheControl: 'max-age=1000000',
                 },
+                storeUrl: true,
               },
             },
-            description:
-              'This fields allows uploading multiple images at once and reordering',
           },
           text: {
             dataType: 'string',
-            title: 'Text',
+            title: 'Markdown Text',
             config: {
               markdown: true,
             },
