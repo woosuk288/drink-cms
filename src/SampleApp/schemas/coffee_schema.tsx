@@ -58,6 +58,22 @@ export const coffeeSchema = buildSchema<Coffee>({
         required: true,
       },
     },
+    flavors: {
+      title: '향미',
+      description: '맛 or 향',
+      dataType: 'array',
+      of: {
+        dataType: 'string',
+        config: {
+          previewAsTag: true,
+        },
+      },
+      validation: {
+        required: true,
+        min: 0,
+        max: 3,
+      },
+    },
     tags: {
       title: '태그',
       description: 'Example of generic array',

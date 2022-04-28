@@ -95,7 +95,7 @@ export const companiesSchema = buildSchema<Company>({
     },
 
     uid: {
-      title: '회사 전화',
+      title: 'uid',
       dataType: 'string',
       readOnly: true,
     },

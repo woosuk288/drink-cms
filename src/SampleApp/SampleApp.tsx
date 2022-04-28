@@ -92,6 +92,15 @@ function SampleApp() {
     initialFilter: {
       // uid: ['==', 'ptyL86Mqu8gBqhobO5UVU37EBFx1'],
     },
+    properties: [
+      'name',
+      'image_url',
+      'description',
+      'flavors',
+      'tags',
+      'public',
+      'created_at',
+    ],
   });
 
   const companiesCollection = buildCollection<Company>({
@@ -248,7 +257,7 @@ function SampleApp() {
         : { roles: [] };
 
     authController.setExtra(userRoleData);
-    console.log('Allowing access to', user);
+    // console.log('Allowing access to', user);
     return !!user;
   };
 

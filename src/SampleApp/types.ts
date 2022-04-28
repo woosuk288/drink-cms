@@ -33,6 +33,7 @@ export type Coffee = {
   name: string;
   image_url: string;
   description: string;
+  flavors: string[];
   tags: string[];
   taste_body: string;
   taste_sweet: string;
